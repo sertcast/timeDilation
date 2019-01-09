@@ -12,6 +12,7 @@ public class Main {
     private static JButton start, reset;
     private static Display displayTop, displayBottom;
     private static JSlider speedDisplayTopSlider, speedDisplayBottomSlider, speedLightSlider;
+    private static JLabel topSpeedLabel, bottomSpeedLabel, speedLightLabel;
 
     private static final int FRAMEW = 1000, FRAMEH = 700;
     private static final int DISPLAYW = FRAMEW - 20, DISPLAYH = FRAMEH / 4;
@@ -77,10 +78,10 @@ public class Main {
 
         private void resetAnimation(int xspeed) {
             x_box = 10;
-            this.xspeed = xspeed * 0.1 * SPEED_OF_LIGHT;
+            this.xspeed = xspeed *0.01 * SPEED_OF_LIGHT;
             x_particle = x_box + ((double) W_BOX - size_particle) / 2;
             y_particle = Y_BOX + H_BOX - size_particle;
-            pyspeed = (Math.sqrt(Math.pow(SPEED_OF_LIGHT, 2) - Math.pow(xspeed, 2)));
+            pyspeed = (Math.sqrt(Math.pow(SPEED_OF_LIGHT, 2) - Math.pow(this.xspeed, 2)));
             yspeed_particle = -pyspeed;
             animate = false;
         }
@@ -111,8 +112,8 @@ public class Main {
         });
         reset.setBounds(FRAMEW - 120, 500, 100, 50);
 
-        speedDisplayTopSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 1);
-        speedDisplayTopSlider.setMajorTickSpacing(5);
+        speedDisplayTopSlider = new JSlider(JSlider.HORIZONTAL, 1, 100, 1);
+        speedDisplayTopSlider.setMajorTickSpacing(10);
         speedDisplayTopSlider.setMinorTickSpacing(1);
         speedDisplayTopSlider.setPaintTicks(true);
         speedDisplayTopSlider.addChangeListener(new ChangeListener() {
@@ -120,12 +121,13 @@ public class Main {
             public void stateChanged(ChangeEvent e) {
                 displayTop.resetAnimation(speedDisplayTopSlider.getValue());
                 displayBottom.resetAnimation(speedDisplayBottomSlider.getValue());
+                topSpeedLabel.setText("top speed: " + (speedDisplayTopSlider.getValue()) + "%");
             }
         });
-        speedDisplayTopSlider.setBounds(10, 400, FRAMEW - 200, 100);
+        speedDisplayTopSlider.setBounds(210, 350, FRAMEW - 400, 100);
 
-        speedDisplayBottomSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 1);
-        speedDisplayBottomSlider.setMajorTickSpacing(5);
+        speedDisplayBottomSlider = new JSlider(JSlider.HORIZONTAL, 1, 100, 1);
+        speedDisplayBottomSlider.setMajorTickSpacing(10);
         speedDisplayBottomSlider.setMinorTickSpacing(1);
         speedDisplayBottomSlider.setPaintTicks(true);
         speedDisplayBottomSlider.addChangeListener(new ChangeListener() {
@@ -133,11 +135,12 @@ public class Main {
             public void stateChanged(ChangeEvent e) {
                 displayTop.resetAnimation(speedDisplayTopSlider.getValue());
                 displayBottom.resetAnimation(speedDisplayBottomSlider.getValue());
+                bottomSpeedLabel.setText("bottom speed: " + (speedDisplayBottomSlider.getValue()) + "%");
             }
         });
-        speedDisplayBottomSlider.setBounds(10, 500, FRAMEW - 200, 100);
+        speedDisplayBottomSlider.setBounds(210, 450, FRAMEW - 400, 100);
 
-        speedLightSlider = new JSlider(JSlider.HORIZONTAL, 3, 7, 3);
+        speedLightSlider = new JSlider(JSlider.HORIZONTAL, 3, 7, 7);
         speedLightSlider.setMinorTickSpacing(1);
         speedLightSlider.setPaintTicks(true);
         speedLightSlider.addChangeListener(new ChangeListener() {
@@ -145,16 +148,26 @@ public class Main {
             public void stateChanged(ChangeEvent e) {
                 SPEED_OF_LIGHT = speedLightSlider.getValue();
                 displayTop.resetAnimation(speedDisplayTopSlider.getValue());
-                displayBottom.resetAnimation(speedLightSlider.getValue());
+                displayBottom.resetAnimation(speedDisplayBottomSlider.getValue());
+                speedLightLabel.setText("speed of light: " + speedLightSlider.getValue());
             }
         });
-        speedLightSlider.setBounds(10, 600, FRAMEW - 200, 100);
+        speedLightSlider.setBounds(210, 550, FRAMEW - 400, 100);
 
         displayTop = new Display(speedDisplayTopSlider.getValue());
         displayTop.setBounds(10, 10, DISPLAYW, DISPLAYH);
 
         displayBottom = new Display(speedDisplayBottomSlider.getValue());
         displayBottom.setBounds(10, 20 + DISPLAYH, DISPLAYW, DISPLAYH);
+
+        speedLightLabel = new JLabel("speed of light: " + speedLightSlider.getValue());
+        speedLightLabel.setBounds(30, 550, 180, 100);
+
+        topSpeedLabel = new JLabel("top speed: " + (speedDisplayTopSlider.getValue()) + "%");
+        topSpeedLabel.setBounds(30, 350, 180, 100);
+
+        bottomSpeedLabel = new JLabel("bottom speed: " + (speedDisplayBottomSlider.getValue()) + "%");
+        bottomSpeedLabel.setBounds(30, 450, 180, 100);
 
         mainPanel.add(displayTop);
         mainPanel.add(displayBottom);
@@ -163,6 +176,9 @@ public class Main {
         mainPanel.add(speedDisplayTopSlider);
         mainPanel.add(speedDisplayBottomSlider);
         mainPanel.add(speedLightSlider);
+        mainPanel.add(topSpeedLabel);
+        mainPanel.add(bottomSpeedLabel);
+        mainPanel.add(speedLightLabel);
 
         frame = new JFrame("Time thing");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
